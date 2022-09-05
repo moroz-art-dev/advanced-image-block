@@ -1,0 +1,17 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 2,
+	"name": "advanced-image-block/advanced-image-block",
+	"version": "0.1.0",
+	"title": "Advanced Image Block",
+	"category": "theme",
+	"icon": "smiley",
+	"description": "An image upload, title text and a setting for the title: level (from h1 to h6) and text colour.",
+	"supports": {
+		"html": false
+	},
+	"textdomain": "advanced-image-block",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css"
+}
