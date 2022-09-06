@@ -4,7 +4,7 @@
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from '@wordpress/block-editor';
+import { useBlockProps } from "@wordpress/block-editor";
 
 /**
  * The save function defines the way in which the different attributes should
@@ -15,10 +15,10 @@ import { useBlockProps } from '@wordpress/block-editor';
  *
  * @return {WPElement} Element to render.
  */
-export default function save() {
-	return (
-		<p { ...useBlockProps.save() }>
-			{ 'Advanced Image Block – hello from the saved content!' }
-		</p>
-	);
+export default function save({ attributes }) {
+	const blockProps = useBlockProps.save();
+	const { message, size, color } = attributes;
+	color ? color : "#000";
+	const content = React.createElement(size, {style: {color: color}}, message);
+	return <div {...blockProps}>{content}</div>;
 }
