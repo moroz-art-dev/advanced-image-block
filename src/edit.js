@@ -86,23 +86,16 @@ export default function Edit({ attributes, isSelected, setAttributes }) {
 	const [textValue, setTextValue] = useState(message ? message : "");
 	const [colorValue, setColorValue] = useState(color ? color : "#000");
 	const [fontSize, setFontSize] = useState(size ? size : options[0]);
-	{
-		console.log("imageValue", imageValue);
-	
-	}
 	const handleTextChange = (val) => {
 		setTextValue(val);
-		generatorMessage();
 		setAttributes({ message: val });
 	};
 	const handleSelectChange = (val) => {
 		setFontSize(val.key);
-		generatorMessage();
 		setAttributes({ size: val.key });
 	};
 	const handleSelectColor = (val) => {
 		setColorValue(val);
-		generatorMessage();
 		setAttributes({ color: val });
 	};
 	const handleImageChange = (event) => {
