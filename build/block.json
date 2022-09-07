@@ -16,27 +16,21 @@
       "source": "text"
     },
     "color": {
-      "type": "string"
+      "type": "string",
+      "default": "#000"
     },
     "size": {
-      "type": "string"
+      "type": "string",
+      "default": "h6"
     },
-    "images": {
-      "type": "array",
-      "source": "query",
+    "image": {
+      "type": "object"
+    },
+    "image_old": {
+      "type": "string",
+      "source": "attribute",
       "selector": "img",
-      "query": {
-        "url": {
-          "type": "string",
-          "source": "attribute",
-          "attribute": "src"
-        },
-        "alt": {
-          "type": "string",
-          "source": "attribute",
-          "attribute": "alt"
-        }
-      }
+      "attribute": "src"
     }
   },
   "textdomain": "advanced-image-block",

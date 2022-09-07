@@ -11,16 +11,19 @@ import { __ } from "@wordpress/i18n";
  *
  * @see https://developer.wordpress.org/block-editor/reference-guides/packages/packages-block-editor/#useblockprops
  */
-import { useBlockProps } from "@wordpress/block-editor";
-
+import {
+	useBlockProps,
+	MediaUpload,
+	MediaUploadCheck,
+} from "@wordpress/block-editor";
 /**
  *
  */
 import {
+	Button,
 	CustomSelectControl,
 	ColorPalette,
 	TextControl,
-	FormFileUpload,
 } from "@wordpress/components";
 import { useState } from "@wordpress/element";
 
@@ -81,8 +84,7 @@ export default function Edit({ attributes, isSelected, setAttributes }) {
 		{ name: "blue", color: "#00f" },
 	];
 	// Simplify access to attributes
-	const { message, color, size, img } = attributes;
-	const [imageValue, setImageValue] = useState(img ? img : []);
+	const { message, color, size, image } = attributes;
 	const [textValue, setTextValue] = useState(message ? message : "");
 	const [colorValue, setColorValue] = useState(color ? color : "#000");
 	const [fontSize, setFontSize] = useState(size ? size : options[0]);
@@ -98,43 +100,81 @@ export default function Edit({ attributes, isSelected, setAttributes }) {
 		setColorValue(val);
 		setAttributes({ color: val });
 	};
-	const handleImageChange = (event) => {
-		if (event.target.files) {
-			setImageValue(event.target.files);
-			setAttributes({ image: event.target.files });
-		}
-		console.log(event.target.files);
+	const handleImageChange = ({ id, url, width, height, title: name }) => {
+		setAttributes({
+			image: {
+				id,
+				name,
+				url,
+				width,
+				height,
+			},
+		});
+	};
+	const handleDeleteFile = () => {
+		setAttributes({
+			image: {},
+		});
 	};
 	return (
 		<div {...useBlockProps()}>
-			<TextControl
-				label="Enter text"
-				value={textValue}
-				onChange={(val) => handleTextChange(val)}
-			/>
-			<CustomSelectControl
-				__nextUnconstrainedWidth
-				label="Choose a size:"
-				options={options}
-				onChange={({ selectedItem }) => handleSelectChange(selectedItem)}
-				value={options.find((option) => option.key === fontSize)}
-			/>
-			<label>Choose a color:</label>
-			<ColorPalette
-				clearable={false}
-				disableCustomColors
-				colors={colors}
-				value={colorValue}
-				onChange={(colorValue) => handleSelectColor(colorValue)}
-			/>
-			<label>Add image:</label>
-			<FormFileUpload
-				multiple={false}
-				accept="image/*"
-				onChange={(event) => handleImageChange(event)}
-			>
-				Upload
-			</FormFileUpload>
+			{attributes.message &&
+				!isSelected &&
+				React.createElement(size, { style: { color: color } }, message)}
+			{typeof attributes.image === "object" &&
+			"url" in attributes.image &&
+			!isSelected
+				? React.createElement("img", { src: attributes.image.url }, null)
+				: null}
+			{(attributes.message ||
+				(typeof attributes.image === "object" && "url" in attributes.image)) &&
+			!isSelected ? null : (
+				<>
+					<TextControl
+						label={__("Enter text", "advanced-image-block")}
+						value={textValue}
+						onChange={(val) => handleTextChange(val)}
+					/>
+					<CustomSelectControl
+						__nextUnconstrainedWidth
+						label={__("Choose a size:", "advanced-image-block")}
+						options={options}
+						onChange={({ selectedItem }) => handleSelectChange(selectedItem)}
+						value={options.find((option) => option.key === fontSize)}
+					/>
+					<label>{__("Choose a color:", "advanced-image-block")}</label>
+					<ColorPalette
+						clearable={false}
+						disableCustomColors
+						colors={colors}
+						value={colorValue}
+						onChange={(colorValue) => handleSelectColor(colorValue)}
+					/>
+					<label>{__("Add image:", "advanced-image-block")}</label>
+					<MediaUploadCheck>
+						<MediaUpload
+							onSelect={({ id, url, width, height, title: name }) =>
+								handleImageChange({ id, url, width, height, title: name })
+							}
+							allowedTypes={["image"]}
+							render={({ open }) => (
+								<Button variant="secondary" isPrimary onClick={open}>
+									{__("Upload", "advanced-image-block")}
+								</Button>
+							)}
+						/>
+					</MediaUploadCheck>
+					{typeof attributes.image === "object" && "url" in attributes.image ? (
+						<Button
+							variant="secondary"
+							isPrimary
+							onClick={() => handleDeleteFile()}
+						>
+							{__("Delete file", "advanced-image-block")}
+						</Button>
+					) : null}
+				</>
+			)}
 		</div>
 	);
 }

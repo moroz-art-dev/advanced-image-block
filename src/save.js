@@ -17,8 +17,13 @@ import { useBlockProps } from "@wordpress/block-editor";
  */
 export default function save({ attributes }) {
 	const blockProps = useBlockProps.save();
-	const { message, size, color } = attributes;
-	color ? color : "#000";
-	const content = React.createElement(size, {style: {color: color}}, message);
-	return <div {...blockProps}>{content}</div>;
+	const { message, size, color, image } = attributes;
+	return (
+		<div {...blockProps}>
+			{React.createElement(size, { style: { color: color } }, message)}
+			{typeof image === "object" && "url" in image
+				? React.createElement("img", { src: image.url }, null)
+				: null}
+		</div>
+	);
 }
